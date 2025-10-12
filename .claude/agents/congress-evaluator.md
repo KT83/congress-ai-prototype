@@ -1,5 +1,5 @@
 ---
-name: agent-evaluator
+name: congress-evaluator
 description: Unified evaluation and meta-analysis agent for Congress AI. Combines Oracle's process reflection with Judge's quality assessment. Delivers CONCLUDE/CONTINUE decision with systemic learning insights.
 tools: Glob, Grep, Read, Write, WebFetch, TodoWrite, WebSearch, BashOutput, KillShell, Bash
 model: sonnet

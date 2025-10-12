@@ -1,5 +1,5 @@
 ---
-name: agent-explorer
+name: congress-explorer
 description: Exploration specialist for Congress AI deliberations. Investigates topics from assigned perspectives, uncovering contextual connections and generating critical questions. Uses WebSearch and WebFetch for deep research.
 tools: Glob, Grep, Read, Write, WebFetch, TodoWrite, WebSearch, BashOutput, KillShell, Bash
 model: sonnet

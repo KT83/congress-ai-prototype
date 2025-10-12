@@ -1,5 +1,5 @@
 ---
-name: agent-integrator
+name: congress-integrator
 description: Unified integration and conclusion agent for Congress AI. Combines Synthesizer's multi-perspective integration with Arbiter's final output generation. Produces goal-specific deliverables (discussion/research/article/idea) in single step.
 tools: Glob, Grep, Read, Write, WebFetch, TodoWrite, WebSearch, BashOutput, KillShell, Bash
 model: sonnet

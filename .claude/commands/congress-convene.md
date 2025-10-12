@@ -101,7 +101,7 @@ Example:
 
 **Radical direction generation**: Challenge fundamental assumptions, use strategies from agent-explorer.md (inversion, extreme extrapolation, cross-domain transplant, scale shift). Keep intellectually productive.
 
-**Usage**: `@agent-agent-explorer`
+**Usage**: `@agent-congress-explorer`
 
 **Output**: Each Explorer returns a file path in format: `OUTPUT_PATH: .records/[YYYY-MM-DD]/[topic-slug]/explorer-[perspective-slug].md`
 
@@ -111,7 +111,7 @@ Example:
 
 ### 3. Critique and Development
 
-Call **3 Dialectic Critics in parallel** (one per Explorer) using **@agent-agent-dialectic-critic**.
+Call **3 Dialectic Critics in parallel** (one per Explorer) using **@agent-congress-critic**.
 
 **Parameters**: Explorer file path, date, topic slug, output language, explorer number
 
@@ -131,7 +131,7 @@ Call **3 Dialectic Critics in parallel** (one per Explorer) using **@agent-agent
 
 #### Phase 4B: Point-by-Point Integration
 
-For EACH point, call **@agent-agent-integrator** in point-focused mode using **parallel Task calls**.
+For EACH point, call **@agent-congress-integrator** in point-focused mode using **parallel Task calls**.
 
 **Parameters**: All 3 Critic paths, date, topic slug, output language, goal type, point focus, point number
 
@@ -151,7 +151,7 @@ For EACH point, call **@agent-agent-integrator** in point-focused mode using **p
 
 #### Phase 5A: Point-by-Point Evaluation
 
-For EACH point, call **@agent-agent-evaluator** in point-focused mode using **parallel Task calls**.
+For EACH point, call **@agent-congress-evaluator** in point-focused mode using **parallel Task calls**.
 
 **Parameters**: Date, topic slug, output language, point focus, point number
 
