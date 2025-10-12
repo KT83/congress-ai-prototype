@@ -26,8 +26,8 @@ It relies entirely on Claude Code.
 ## Project Structure
 
 - `.claude/` - Claude Code configurations
-  - `agents/` - Agent definitions (Explorer, Dialectic Critic, Integrator, Evaluator)
-  - `commands/` - Slash commands (convene.md - main deliberation protocol)
+  - `agents/` - Agent definitions (congress-explorer, congress-critic, congress-integrator, congress-evaluator)
+  - `commands/` - Slash commands (congress-convene.md - main deliberation protocol)
 - `.records/[YYYY-MM-DD]/[topic-slug]/` - Deliberation process outputs (explorers, critics, integrator, evaluator)
 - `output/[YYYY-MM-DD]/[topic-slug]/` - Final output files organized by date and topic
 
@@ -36,7 +36,7 @@ It relies entirely on Claude Code.
 Start a deliberation with:
 
 ```
-/convene [topic description]
+/congress-convene [topic description]
 
 [goal: discussion | research | article | idea]
 ```
@@ -44,7 +44,7 @@ Start a deliberation with:
 Example:
 
 ```
-/convene Everything becomes vibe coding
+/congress-convene Everything becomes vibe coding
 
 article
 ```
