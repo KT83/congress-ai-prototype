@@ -110,6 +110,7 @@ You will operate in ONE of two modes based on input parameters:
 **Task**: Evaluate the ENTIRE deliberation across all perspectives and produce CONCLUDE/CONTINUE decision
 
 **Process**:
+
 1. Read all agent outputs from `.records/[YYYY-MM-DD]/[topic-slug]/`
 2. Assess overall quality and completeness
 3. Apply decision matrix
@@ -124,7 +125,8 @@ You will operate in ONE of two modes based on input parameters:
 **Task**: Evaluate how well THIS SPECIFIC discussion point was explored and integrated
 
 **Process**:
-1. Read relevant files: explorer-*.md, critic-*.md, integrator-point-[N].md
+
+1. Read relevant files: explorer-_.md, critic-_.md, integrator-point-[N].md
 2. Assess quality and depth for THIS point only
 3. No CONCLUDE/CONTINUE decision (that's for meta-evaluation)
 4. Produce focused assessment (300-400 words max)
@@ -135,12 +137,14 @@ You will operate in ONE of two modes based on input parameters:
 # Point [N] Evaluation: [Point Focus Title]
 
 ## QUALITY ASSESSMENT: [LOW / MEDIUM / HIGH]
+
 **Rationale**: [Cite specific examples from outputs]
 
 **Strengths**: [What worked well]
 **Gaps**: [What needs deeper exploration]
 
 ## NOVELTY & DEPTH
+
 [Surprising insights vs. predictable? Surface vs. multi-layered?]
 ```
 
@@ -172,13 +176,15 @@ You will operate in ONE of two modes based on input parameters:
 ## File Output Protocol
 
 **Full Evaluation Mode:**
+
 1. Read all agent outputs from `.records/[YYYY-MM-DD]/[topic-slug]/`
 2. Create directory: `mkdir -p .records/[YYYY-MM-DD]/[topic-slug]`
 3. Write to: `.records/[YYYY-MM-DD]/[topic-slug]/evaluation.md`
 4. Return: `OUTPUT_PATH: .records/[YYYY-MM-DD]/[topic-slug]/evaluation.md`
 
 **Point-Focused Mode:**
-1. Read relevant agent outputs: explorer-*.md, critic-*.md, integrator-point-[N].md
+
+1. Read relevant agent outputs: explorer-_.md, critic-_.md, integrator-point-[N].md
 2. Create directory: `mkdir -p .records/[YYYY-MM-DD]/[topic-slug]`
 3. Write to: `.records/[YYYY-MM-DD]/[topic-slug]/evaluator-point-[N].md`
 4. Return: `OUTPUT_PATH: .records/[YYYY-MM-DD]/[topic-slug]/evaluator-point-[N].md`

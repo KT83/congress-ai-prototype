@@ -1,3 +1,7 @@
+---
+allowed-tools: TodoWrite, Bash, BashOutput, Read, Write
+---
+
 ## Role
 
 Claude Code acts as the **Assembly moderator**:
@@ -7,13 +11,49 @@ Claude Code acts as the **Assembly moderator**:
 - Finalize conclusions
 - All research/proposals/counterarguments handled by Subagents
 
-## Deliberation Flow (5 Steps)
+## Deliberation Flow (6 Steps)
 
+0. **Initialize**: Set up task management with TodoWrite
 1. **Frame**: Define goal and pre-scope perspectives
 2. **Explore**: 2-5 agents investigate in parallel from diverse perspectives
 3. **Critique**: Dialectic Critics refine each claim
 4. **Integrate**: Integrator produces final output (synthesis + conclusion in one step)
 5. **Evaluate**: Evaluator assesses quality and decides CONCLUDE/CONTINUE
+
+---
+
+### 0. Initialize Task Management
+
+**MANDATORY FIRST STEP**: Use TodoWrite to create task list with these items:
+
+1. Initialize task management
+2. Frame deliberation (goal, perspectives, scoping)
+3. Confirm Explorer lineup with user
+4. Launch 3 Explorers in parallel
+5. Launch 3 Critics in parallel
+6. Extract key discussion points
+7. Run point-by-point integration
+8. Create meta-integration conclusion
+9. Run point-by-point evaluation
+10. Create meta-evaluation and decide CONCLUDE/CONTINUE
+11. Finalize and output results
+
+Mark as `in_progress` when starting, `completed` when done. Keep only ONE `in_progress` at a time.
+
+**Slug Uniqueness Check**:
+
+After receiving the user's topic, generate a topic-slug and ensure uniqueness:
+
+1. Generate initial slug from topic (lowercase, URL-safe, replace spaces with hyphens)
+2. Check if `.records/[YYYY-MM-DD]/[topic-slug]/` exists using `ls` or similar
+3. If directory exists, append `-2`, `-3`, `-4`, etc. until finding a unique slug
+4. Inform user: "Using topic slug: `[final-topic-slug]`"
+
+Example:
+- Topic: "Vibe Coding for BI"
+- Initial slug: `vibe-coding-for-bi`
+- If `.records/2025-10-15/vibe-coding-for-bi/` exists → try `vibe-coding-for-bi-2`
+- Continue until unique directory name found
 
 ---
 
@@ -27,6 +67,11 @@ The user provides a topic and goal: **discussion | research | article | idea**
 - **idea**: Multiple creative ideas, original and surprising, from diverse viewpoints
 
 **Language Detection**: Detect the user's input language from their initial message. All agent outputs MUST be in the same language as the user's input.
+
+**Development Mode**: Automatically determined by goal type to control how far agents can diverge from the original topic:
+
+- **`focused`** (article, research) → Maintain close connection to original topic; prioritize practical, constructive analysis
+- **`expansive`** (idea, discussion) → Encourage bold development and provocative perspectives
 
 **Success criteria**: Confirm goal and define what makes this deliberation successful.
 
@@ -50,25 +95,13 @@ Select 1 expert from a different domain who can provide fresh insights:
 - Look for unexpected connections (e.g., artist for tech topic, engineer for social topic)
 - Prioritize potential for novel reframing
 
-**Selection Dimensions**:
-
-1. **Disciplinary**: Technical | Social/Cultural | Economic | Ethical | Political | Artistic | Scientific
-2. **Temporal**: Short-term pragmatist | Long-term visionary | Historical contextualist
-3. **Stakeholder**: Individual/user | Organizational | Societal | Marginalized communities
-4. **Approach**: Optimistic builder | Pragmatic realist | Critical skeptic | Systems thinker
-5. **Expertise**: Practitioner | Researcher/Theorist | Policymaker | Domain outsider
+**Selection Dimensions**: Disciplinary | Temporal | Stakeholder | Approach | Expertise
 
 **Example** - "AI in education":
 
-- **Explorer 1** (Domain Expert): Learning scientist - Focus on cognitive principles, evidence-based pedagogy
-- **Explorer 2** (Domain Expert): Classroom teacher - Focus on daily practice, student engagement, implementation challenges
-- **Explorer 3** (Alternative): Game designer - Focus on motivation, engagement mechanics, learning through play
-
-**Example** - "Future of remote work":
-
-- **Explorer 1** (Domain Expert): Organizational psychologist - Focus on team dynamics, productivity, well-being
-- **Explorer 2** (Domain Expert): Urban planner - Focus on city design, infrastructure, commuting patterns
-- **Explorer 3** (Alternative): Anthropologist - Focus on ritual, culture, social cohesion, human needs
+- Explorer 1 (Domain): Learning scientist - cognitive principles, pedagogy
+- Explorer 2 (Domain): Classroom teacher - daily practice, implementation
+- Explorer 3 (Alternative): Game designer - engagement mechanics, motivation
 
 **Pre-Scoping**: Define investigation boundaries for each Explorer **before** launching them
 
@@ -76,95 +109,83 @@ Select 1 expert from a different domain who can provide fresh insights:
 - Ensure minimal overlap between the 2 domain experts
 - Allow the alternative perspective to explore freely for unexpected insights
 
+#### Confirm Explorer Lineup with User
+
+**MANDATORY**: Present 3 Explorers (role, focus, angle) and ask "Is this lineup appropriate?"
+
+Wait for explicit approval before launching. If rejected/adjusted, revise and re-confirm.
+
 ---
 
 ### 2. Exploration (Parallel Execution)
 
-**CRITICAL**: Call **ALL 3 Explorers in parallel** using multiple Task tool calls in a single message.
+Launch **ALL 3 Explorers in parallel** using multiple Task tool calls.
 
-Example:
+**Parameters**: Topic, date, topic slug, output language, expert role, perspective slug, investigation scope, discussion development direction, boundary note, **development mode**
 
-```
-<invoke Task with Explorer 1 - Domain Expert A>
-<invoke Task with Explorer 2 - Domain Expert B>
-<invoke Task with Explorer 3 - Alternative Perspective>
-```
+**Agent**: `@agent-congress-explorer`
 
-**Parameters for each Explorer:**
+**Development mode determination**:
 
-- Topic, date (YYYY-MM-DD), topic slug
-- **Output language**: [detected from user input]
-- Expert role, perspective slug
-- **Investigation scope**: Specific aspect to focus on
-- **Radical direction**: Provocative angle using inversion/extrapolation/cross-domain transplant
-- **Boundary note**: For domain experts - avoid overlap; for alternative - explore freely
+- article, research → `focused`
+- idea, discussion → `expansive`
 
-**Radical direction generation**: Challenge fundamental assumptions, use strategies from agent-explorer.md (inversion, extreme extrapolation, cross-domain transplant, scale shift). Keep intellectually productive.
+**Discussion development direction** for each Explorer:
 
-**Usage**: `@agent-congress-explorer`
+1. Specific angle/lens, depth (surface/mid/deep), breadth (narrow/medium/wide)
+2. Advancement strategy: Challenge assumptions | Extrapolate | Transplant | Scale shift | Surface tensions | Bridge gaps
+3. **When mode is `focused`**: Ensure all radical expansions maintain clear connection to original topic; prioritize explanatory analogies over decorative ones
+4. **When mode is `expansive`**: Use current guidelines (radical expansion encouraged)
 
-**Output**: Each Explorer returns a file path in format: `OUTPUT_PATH: .records/[YYYY-MM-DD]/[topic-slug]/explorer-[perspective-slug].md`
-
-**Token Optimization**: Fixed 3-explorer structure ensures predictable token consumption
+**Output**: `.records/[YYYY-MM-DD]/[topic-slug]/explorer-[perspective-slug].md`
 
 ---
 
 ### 3. Critique and Development
 
-Call **3 Dialectic Critics in parallel** (one per Explorer) using **@agent-congress-critic**.
+Launch **3 Critics in parallel** (one per Explorer)
 
-**Parameters**: Explorer file path, date, topic slug, output language, explorer number
+**Agent**: `@agent-congress-critic` | **Parameters**: Explorer file path, date, topic slug, output language, explorer number, **development mode** | **Output**: `.records/[YYYY-MM-DD]/[topic-slug]/critic-[explorer-number].md`
 
-**Output**: `OUTPUT_PATH: .records/[YYYY-MM-DD]/[topic-slug]/critic-[explorer-number].md`
+**Development mode guidance for Critics**:
+
+- **`focused` mode**: At least one pathway must strengthen the core insight; provocative questions maintain relevance to original topic; speculative pathways must clearly connect back to the main argument
+- **`expansive` mode**: Use current guidelines (bold, speculative pathways encouraged)
 
 ---
 
 ### 4. Point Extraction and Orchestrated Integration
 
-**This step has two phases to manage context length:**
+#### 4A: Extract Key Points (Claude Code)
 
-#### Phase 4A: Extract Key Discussion Points (Claude Code)
+Read 3 Critic files, extract 3-5 distinct themes/tensions → `.records/[YYYY-MM-DD]/[topic-slug]/discussion-points.md`
 
-**Claude Code reads all 3 Critic files and extracts 3-5 key discussion points** that represent distinct themes/tensions cutting across analyses. Avoid generic categories.
+#### 4B: Point-by-Point Integration
 
-**Output**: Write to `.records/[YYYY-MM-DD]/[topic-slug]/discussion-points.md`
+Launch **Integrators in parallel** (one per point)
 
-#### Phase 4B: Point-by-Point Integration
+**Agent**: `@agent-congress-integrator` | **Parameters**: 3 Critic paths, date, topic slug, output language, goal type, point focus, point number | **Output**: `.records/[YYYY-MM-DD]/[topic-slug]/integrator-point-[N].md`
 
-For EACH point, call **@agent-congress-integrator** in point-focused mode using **parallel Task calls**.
+#### 4C: Meta-Integration (Claude Code)
 
-**Parameters**: All 3 Critic paths, date, topic slug, output language, goal type, point focus, point number
-
-**Output**: `OUTPUT_PATH: .records/[YYYY-MM-DD]/[topic-slug]/integrator-point-[N].md`
-
-#### Phase 4C: Meta-Integration (Claude Code)
-
-**Claude Code reads all point integrations and synthesizes final output** formatted by goal type.
-
-**Output**: Write to `.records/[YYYY-MM-DD]/[topic-slug]/integrator-conclusion.md`
+Read point integrations, synthesize final output by goal type → `.records/[YYYY-MM-DD]/[topic-slug]/integrator-conclusion.md`
 
 ---
 
 ### 5. Point-by-Point Evaluation and Meta-Analysis
 
-**Two phases:**
+#### 5A: Point-by-Point Evaluation
 
-#### Phase 5A: Point-by-Point Evaluation
+Launch **Evaluators in parallel** (one per point)
 
-For EACH point, call **@agent-congress-evaluator** in point-focused mode using **parallel Task calls**.
+**Agent**: `@agent-congress-evaluator` | **Parameters**: Date, topic slug, output language, point focus, point number | **Output**: `.records/[YYYY-MM-DD]/[topic-slug]/evaluator-point-[N].md`
 
-**Parameters**: Date, topic slug, output language, point focus, point number
+#### 5B: Meta-Evaluation and Decision (Claude Code)
 
-**Output**: `OUTPUT_PATH: .records/[YYYY-MM-DD]/[topic-slug]/evaluator-point-[N].md`
-
-#### Phase 5B: Meta-Evaluation and Decision (Claude Code)
-
-**Claude Code aggregates evaluations and decides CONCLUDE/CONTINUE** using decision matrix (Quality ≥ MEDIUM AND Completeness ≥ ADEQUATE).
-
-**Output**: Write to `.records/[YYYY-MM-DD]/[topic-slug]/evaluation.md`
+Aggregate evaluations, decide CONCLUDE/CONTINUE (Quality ≥ MEDIUM AND Completeness ≥ ADEQUATE) → `.records/[YYYY-MM-DD]/[topic-slug]/evaluation.md`
 
 ---
 
 ### 6. Final Output
 
-When CONCLUDE: Read conclusion from `integrator-conclusion.md` and write to `output/[YYYY-MM-DD]/[topic-slug]/output.md` in user's language.
+When CONCLUDE: Read `integrator-conclusion.md` → write to `output/[YYYY-MM-DD]/[topic-slug]/output.md` in user's language

@@ -24,8 +24,12 @@ No evaluation, ranking, or convergent thinking during brainstorm phase.
 **Moderator**:
 
 - Detect language from user input
-- Create directory: `.records/[YYYY-MM-DD]/[topic-slug]-bs/`
 - Generate topic_slug (URL-safe lowercase with hyphens)
+- **Slug Uniqueness Check**:
+  1. Check if `.records/[YYYY-MM-DD]/[topic-slug]-bs/` exists using `ls` or similar
+  2. If exists, append `-2`, `-3`, `-4`, etc. until finding a unique slug
+  3. Inform user: "Using topic slug: `[final-topic-slug]-bs`"
+- Create directory: `.records/[YYYY-MM-DD]/[topic-slug]-bs/`
 
 **Agent**: `bs-clarifier`
 
